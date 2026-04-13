@@ -1,13 +1,12 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Wprowadź tutaj dane konfiguracji Firebase z własnego projektu
     const firebaseConfig = {
-        apiKey: "TWOJ_API_KEY",
-        authDomain: "TWOJ_PROJECT.firebaseapp.com",
-        databaseURL: "https://TWOJ_PROJECT-default-rtdb.REGION.firebasedatabase.app",
-        projectId: "TWOJ_PROJECT",
-        storageBucket: "TWOJ_PROJECT.appspot.com",
-        messagingSenderId: "TWOJ_MESSAGING_SENDER_ID",
-        appId: "TWOJ_APP_ID"
+        apiKey: "AIzaSyCGjofcQ0MrlQsQF8s-cbhNIXTpwixFP30",
+        authDomain: "my-cv-ebfe1.firebaseapp.com",
+        databaseURL: "https://my-cv-ebfe1-default-rtdb.europe-west1.firebasedatabase.app",
+        projectId: "my-cv-ebfe1",
+        storageBucket: "my-cv-ebfe1.firebasestorage.app",
+        messagingSenderId: "67850376385",
+        appId: "1:67850376385:web:ccf9dda574658bbb5ef040"
     };
 
     firebase.initializeApp(firebaseConfig);
@@ -108,7 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     setTimeout(() => { successMsg.style.display = 'none'; }, 5000);
                 } catch (error) {
                     successMsg.style.display = 'block';
-                    successMsg.textContent = 'Błąd wysyłania. Sprawdź konfigurację Firebase i spróbuj jeszcze raz.';
+                    successMsg.textContent = 'Błąd wysyłania. Перевір конфігурацію Firebase і спробуй ще раз.';
                     successMsg.style.color = '#d93025';
                     console.error('Błąd wysyłania formularza:', error);
                 }
