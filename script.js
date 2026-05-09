@@ -17,17 +17,22 @@ document.addEventListener('DOMContentLoaded', () => {
     const toggleBtn = document.getElementById('toggle-section-btn');
     const sectionToHide = document.getElementById('section-to-hide');
 
-    if (themeBtn && mainStyle) {
-        themeBtn.onclick = () => {
-            if (mainStyle.getAttribute('href').includes('red.css')) {
-                mainStyle.setAttribute('href', 'green.css');
-                themeBtn.style.backgroundColor = '#2e8b57';
-            } else {
-                mainStyle.setAttribute('href', 'red.css');
-                themeBtn.style.backgroundColor = '#dc2626';
-            }
-        };
+const THEME_STORAGE_KEY = 'userTheme';
+
+if (themeBtn && mainStyle) {
+    const savedTheme = localStorage.getItem(THEME_STORAGE_KEY);
+    if (savedTheme) {
+        mainStyle.setAttribute('href', savedTheme);
+        themeBtn.style.backgroundColor = savedTheme.includes('green.css') ? '#2e8b57' : '#dc2626';
     }
+
+    themeBtn.onclick = () => {
+        let newTheme = mainStyle.getAttribute('href').includes('red.css') ? 'green.css' : 'red.css';
+        mainStyle.setAttribute('href', newTheme);
+        themeBtn.style.backgroundColor = newTheme === 'green.css' ? '#2e8b57' : '#dc2626';
+        localStorage.setItem(THEME_STORAGE_KEY, newTheme);
+    };
+}
 
     if (toggleBtn && sectionToHide) {
         toggleBtn.onclick = () => {
@@ -59,8 +64,13 @@ document.addEventListener('DOMContentLoaded', () => {
             fields.forEach(field => {
                 const input = document.getElementById(field.id);
                 const errorSpan = document.getElementById(field.errId);
-                const val = input.value.trim();
-                
+                const val = input ? input.value.trim() : '';
+
+                if (!input || !errorSpan) {
+                    isValid = false;
+                    return;
+                }
+
                 input.classList.remove('invalid');
                 errorSpan.textContent = "";
 
@@ -100,15 +110,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 try {
                     await database.ref('feedback').push(formData);
-                    successMsg.style.display = 'block';
-                    successMsg.textContent = 'Sukces! Wiadomość została wysłana do Firebase Realtime Database.';
-                    successMsg.style.color = '#0f9d58';
+                    if (successMsg) {
+                        successMsg.style.display = 'block';
+                        successMsg.textContent = 'Sukces! Wiadomość została wysłana do Firebase Realtime Database.';
+                        successMsg.style.color = '#0f9d58';
+                        setTimeout(() => { if (successMsg) successMsg.style.display = 'none'; }, 5000);
+                    }
                     form.reset();
-                    setTimeout(() => { successMsg.style.display = 'none'; }, 5000);
                 } catch (error) {
-                    successMsg.style.display = 'block';
-                    successMsg.textContent = 'Błąd wysyłania. Перевір конфігурацію Firebase і спробуй ще раз.';
-                    successMsg.style.color = '#d93025';
+                    if (successMsg) {
+                        successMsg.style.display = 'block';
+                        successMsg.textContent = 'Błąd wysyłania. Sprawdź konfigurację Firebase i spróbuj jeszcze raz.';
+                        successMsg.style.color = '#d93025';
+                    }
                     console.error('Błąd wysyłania formularza:', error);
                 }
             }
